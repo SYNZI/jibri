@@ -93,6 +93,31 @@ data class XmppEnvironmentConfig(
     val trustAllXmppCerts: Boolean = true
 )
 
+data class SipCaptureConfig {
+    /**
+    * Display id that chrome will run in that we will use 
+    * to capture and send to conferenceCaptureVideoDevice
+    */
+    @JsonProperty("conference_display_id")
+    val conferenceDisplayId: Int = 0,
+    /**
+    * Display that the sip soft phone client will run in
+    * that we will use to capture and send to sipCaptureVideoDevice
+    */
+    @JsonProperty("sip_display_id")
+    val sipDisplayId: Int = 1,
+    /**
+    * Video device to write output from the conference to
+    */
+    @JsonProperty("conference_capture_video_device")
+    val conferenceCaptureVideoDevice: String = "/dev/video0",
+    /**
+    * Video device to write ouput from the sip device to.
+    */
+    @JsonProperty("sip_capture_video_device")
+    val sipCaptureVideoDevice: String = "/dev/video1",
+}
+
 data class JibriConfig(
     @JsonProperty("recording_directory")
     val recordingDirectory: String,
@@ -106,4 +131,6 @@ data class JibriConfig(
     val finalizeRecordingScriptPath: String,
     @JsonProperty("xmpp_environments")
     val xmppEnvironments: List<XmppEnvironmentConfig>
+    @JsonProperty("sip_capture_config")
+    val sipCaptureConfig: SipCaptureConfig
 )
