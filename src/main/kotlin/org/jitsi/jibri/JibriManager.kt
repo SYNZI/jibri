@@ -172,10 +172,16 @@ class JibriManager(
             statsDClient?.incrementCounter(ASPECT_BUSY, TAG_SERVICE_SIP_GATEWAY)
             return StartServiceResult.BUSY
         }
+
         val service = SipGatewayJibriService(SipGatewayServiceParams(
             sipGatewayServiceParams.callParams,
-            sipGatewayServiceParams.sipClientParams
+            sipGatewayServiceParams.sipClientParams,
+            config.sipCaptureContig.conferenceCaptureVideoDevice,
+            config.sipCaptureConfig.sipCaptureVideoDevice,
+            config.sipCaptureConfig.conferenceDisplayId,
+            config.sipCaptureConfig.sipDisplayId
         ))
+
         statsDClient?.incrementCounter(ASPECT_START, TAG_SERVICE_SIP_GATEWAY)
         return startService(service, serviceParams, environmentContext, serviceStatusHandler)
     }
