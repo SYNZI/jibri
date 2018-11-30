@@ -33,7 +33,7 @@ interface Capturer : MonitorableProcess {
      * true if the [Capturer] was started successfully,
      * false otherwise.
      */
-    fun start(sink: Sink): Boolean
+    fun start(sink: Sink, display: Int = 0): Boolean
 
     /**
      * Stop the capturer
