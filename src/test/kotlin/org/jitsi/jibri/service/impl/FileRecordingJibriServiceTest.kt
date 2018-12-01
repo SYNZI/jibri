@@ -104,11 +104,11 @@ internal class FileRecordingJibriServiceTest : ShouldSpec() {
             "when joining the call succeeds" {
                 whenever(jibriSelenium.joinCall(any(), any())).thenReturn(true)
                 "and the capturer starts successfully" {
-                    whenever(capturer.start(sinkCapturer.capture())).thenReturn(true)
+                    whenever(capturer.start(sinkCapturer.capture(), any())).thenReturn(true)
                     "and the recordings directory doesn't exist" {
                         val startResult = fileRecordingJibriService.start()
                         should("start the capturer") {
-                            verify(capturer).start(any())
+                            verify(capturer).start(any(), any())
                         }
                         should("have selenium join the call") {
                             verify(jibriSelenium).joinCall(any(), any())
@@ -137,7 +137,7 @@ internal class FileRecordingJibriServiceTest : ShouldSpec() {
                     }
                 }
                 "and the capturer doesn't start" {
-                    whenever(capturer.start(sinkCapturer.capture())).thenReturn(false)
+                    whenever(capturer.start(sinkCapturer.capture(), any())).thenReturn(false)
                     should("return false") {
                         fileRecordingJibriService.start() shouldBe false
                     }
@@ -154,7 +154,7 @@ internal class FileRecordingJibriServiceTest : ShouldSpec() {
             "after a successful start" {
                 whenever(jibriSelenium.joinCall(any(), any())).thenReturn(true)
                 whenever(jibriSelenium.getParticipants()).thenReturn(listOf())
-                whenever(capturer.start(any())).thenReturn(true)
+                whenever(capturer.start(any(), any())).thenReturn(true)
 
                 fileRecordingJibriService.start()
                 val recordingFile = recordingsDir.resolve(sessionId).resolve("recording.mp4")
