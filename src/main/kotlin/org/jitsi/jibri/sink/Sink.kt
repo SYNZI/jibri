@@ -39,4 +39,9 @@ interface Sink {
      * Any ffmpeg command-line options this [Sink] requires
      */
     val options: Array<String>
+
+    /**
+    * Can this [Sink] support an audio input
+    */
+    val hasAudio: Boolean
 }

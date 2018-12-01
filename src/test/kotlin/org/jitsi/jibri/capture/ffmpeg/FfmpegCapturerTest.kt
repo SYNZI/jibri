@@ -54,7 +54,7 @@ internal class FfmpegCapturerTest : ShouldSpec() {
                 should("be correct for linux") {
                     ffmpegCapturer.start(sink)
                     commandCaptor.firstValue should contain("x11grab")
-                    commandCaptor.firstValue should contain("alsa")
+                    commandCaptor.firstValue should contain("-draw_mouse")
                     commandCaptor.firstValue should contain("option1")
                     commandCaptor.firstValue should contain("option2")
                 }

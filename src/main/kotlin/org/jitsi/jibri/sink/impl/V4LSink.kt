@@ -25,6 +25,9 @@ import org.jitsi.jibri.sink.Sink
  */
 class V4LSink(val device: String) : Sink {
     override val path: String = device
-    override val format: String = "v4l"
-    override val options: Array<String> = arrayOf()
+    override val format: String = "v4l2"
+    override val hasAudio: Boolean = false
+    override val options: Array<String> = arrayOf(
+        "-c:v", "rawvideo"
+    )
 }

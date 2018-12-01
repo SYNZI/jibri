@@ -16,7 +16,7 @@
  */
 
 package org.jitsi.jibri.sink.impl
-
+import org.jitsi.jibri.capture.ffmpeg.executor.FfmpegExecutorParams
 import org.jitsi.jibri.sink.Sink
 import java.nio.file.Path
 import java.time.LocalDateTime
@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter
  */
 class FileSink(recordingsDirectory: Path, callName: String, extension: String = "mp4") : Sink {
     val file: Path
+    val ffmpegExecutorParams: FfmpegExecutorParams = FfmpegExecutorParams()
     init {
         val currentTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
@@ -36,7 +37,9 @@ class FileSink(recordingsDirectory: Path, callName: String, extension: String = 
     }
     override val path: String = file.toString()
     override val format: String = extension
+    override val hasAudio: Boolean = true
     override val options: Array<String> = arrayOf(
+        "-c:v", "libx264", "-preset", ffmpegExecutorParams.videoEncodePreset,
         "-profile:v", "main",
         "-level", "3.1"
     )

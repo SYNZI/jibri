@@ -16,16 +16,20 @@
  */
 
 package org.jitsi.jibri.sink.impl
-
+import org.jitsi.jibri.capture.ffmpeg.executor.FfmpegExecutorParams
 import org.jitsi.jibri.sink.Sink
 
 /**
  * [StreamSink] represents a sink which will write to a network stream
  */
 class StreamSink(val url: String, val streamingMaxBitrate: Int, val streamingBufSize: Int) : Sink {
+    val ffmpegExecutorParams: FfmpegExecutorParams = FfmpegExecutorParams()
+
     override val path: String = url
     override val format: String = "flv"
+    override val hasAudio: Boolean = true
     override val options: Array<String> = arrayOf(
+        "-c:v", "libx264", "-preset", ffmpegExecutorParams.videoEncodePreset,
         "-maxrate", "${streamingMaxBitrate}k",
         "-bufsize", "${streamingBufSize}k"
     )
