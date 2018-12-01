@@ -37,6 +37,7 @@ import java.util.logging.Logger
 
 import org.jitsi.jibri.capture.Capturer
 import org.jitsi.jibri.capture.ffmpeg.FfmpegCapturer
+import org.jitsi.jibri.capture.ffmpeg.executor.FFMPEG_RESTART_ATTEMPTS
 import org.jitsi.jibri.sink.Sink
 import org.jitsi.jibri.sink.impl.V4LSink
 
@@ -59,13 +60,13 @@ data class SipGatewayServiceParams(
  */
 class SipGatewayJibriService(
     private val sipGatewayServiceParams: SipGatewayServiceParams,
-    private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
     private val conferenceCaptureDeviceName: String,
     private val sipCaptureDeviceName: String,
     private val conferenceDisplayId: Int,
     private val sipDisplayId: Int,
+    private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
     private val conferenceCapturer: Capturer = FfmpegCapturer(),
-    private val siCapturer: Capturer = FfmpegCapturer()
+    private val sipCapturer: Capturer = FfmpegCapturer()
 ) : JibriService() {
     /**
      * The [Logger] for this class
@@ -99,20 +100,20 @@ class SipGatewayJibriService(
      */
     private var processMonitorTask: ScheduledFuture<*>? = null
     /**
-    * Monitor the the conference capture task - if this goes down we will want 
-    * to attempt to restart it. If it can't be restarted, we should shut down the call. 
+    * Monitor the the conference capture task - if this goes down we will want
+    * to attempt to restart it. If it can't be restarted, we should shut down the call.
     */
     private var conferenceCapturerMonitorTask: ScheduledFuture<*>? = null
     /**
     * Monitor the capture of the sip device - if this goes down we will want
-    * to attempt to restart it. If it can't be restarted, we should shut down the call. 
+    * to attempt to restart it. If it can't be restarted, we should shut down the call.
     */
     private var sipCapturerMonitorTask: ScheduledFuture<*>? = null
 
     init {
 
-        logger.info("Capturing conference from ${conferenceCaptureDeviceName}")
-        logger.info("Capturing sip device from ${sipCaptureDeviceName}")
+        logger.info("Capturing conference from $conferenceCaptureDeviceName")
+        logger.info("Capturing sip device from $sipCaptureDeviceName")
 
         conferenceSink = V4LSink(
             conferenceCaptureDeviceName
@@ -157,8 +158,8 @@ class SipGatewayJibriService(
 
         processMonitorTask = executor.scheduleAtFixedRate(createSipClientMonitor(pjsuaClient), 30, 10, TimeUnit.SECONDS)
 
-        conferenceCapturerMonitorTask = executor.scheduleAtFixedRate(createCaptureMonitor(conferenceCapturer), 30, 10, TimeUnit.SECONDS)
-        sipCapturerMonitorTask = executor.scheduleAtFixedRate(createCaptureMonitor(sipCapturer), 30, 10, TimeUnit.SECONDS)
+        conferenceCapturerMonitorTask = executor.scheduleAtFixedRate(createCaptureMonitor(conferenceCapturer, conferenceSink), 30, 10, TimeUnit.SECONDS)
+        sipCapturerMonitorTask = executor.scheduleAtFixedRate(createCaptureMonitor(sipCapturer, sipSink), 30, 10, TimeUnit.SECONDS)
 
         return true
     }
@@ -186,9 +187,8 @@ class SipGatewayJibriService(
         }
     }
 
-    private fun createCaptureMonitor(process: Capturer): ProcessMonitor {
+    private fun createCaptureMonitor(process: Capturer, sink: Sink): ProcessMonitor {
         var numRestarts = 0
-        var sink = process.sink;
 
         return ProcessMonitor(process) { exitCode ->
             if (exitCode != null) {
@@ -213,12 +213,12 @@ class SipGatewayJibriService(
 
     override fun stop() {
         processMonitorTask?.cancel(false)
-        conferenceCapturerMonitorTask?.cancel(false);
-        sipCapturerMonitorTask?.cancel(false);
+        conferenceCapturerMonitorTask?.cancel(false)
+        sipCapturerMonitorTask?.cancel(false)
 
         pjsuaClient.stop()
-        conferenceCapturer.stop();
-        sipCapturer.stop();
+        conferenceCapturer.stop()
+        sipCapturer.stop()
 
         jibriSelenium.leaveCallAndQuitBrowser()
     }
