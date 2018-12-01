@@ -39,14 +39,14 @@ class FfmpegCapturer(
     private val ffmpegExecutor: FfmpegExecutor = FfmpegExecutor()
 ) : Capturer {
     private val logger = Logger.getLogger(this::class.qualifiedName)
-    private val getCommand: (Sink) -> List<String>
+    private val getCommand: (Sink, Int) -> List<String>
 
     init {
         val osType = osDetector.getOsType()
         logger.debug("Detected os as OS: $osType")
         getCommand = when (osType) {
-            OsType.MAC -> { sink: Sink, display: Int = 0 -> getFfmpegCommandMac(FfmpegExecutorParams(), sink, display) }
-            OsType.LINUX -> { sink: Sink, display: Int = 0 -> getFfmpegCommandLinux(FfmpegExecutorParams(), sink, display) }
+            OsType.MAC -> { sink: Sink, display: Int -> getFfmpegCommandMac(FfmpegExecutorParams(), sink, display) }
+            OsType.LINUX -> { sink: Sink, display: Int -> getFfmpegCommandLinux(FfmpegExecutorParams(), sink, display) }
             else -> throw UnsupportedOsException()
         }
     }
@@ -55,7 +55,7 @@ class FfmpegCapturer(
      * Start the capturer and write to the given [Sink].  Returns
      * true on success, false otherwise
      */
-    override fun start(sink: Sink, display: Int = 0): Boolean {
+    override fun start(sink: Sink, display: Int): Boolean {
         val command = getCommand(sink, display)
         if (!ffmpegExecutor.launchFfmpeg(command)) {
             return false
