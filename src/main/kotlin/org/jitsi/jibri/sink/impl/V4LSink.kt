@@ -18,15 +18,13 @@
 package org.jitsi.jibri.sink.impl
 
 import org.jitsi.jibri.sink.Sink
-import java.nio.file.Path
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 /**
  * [V4LSink] represents a Video4Linux Loopback sink which will write
- * data to a video device. 
+ * data to a video device.
  */
 class V4LSink(val device: String) : Sink {
     override val path: String = device
     override val format: String = "v4l"
+    override val options: Array<String> = arrayOf()
 }
