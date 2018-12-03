@@ -20,9 +20,9 @@ import org.jitsi.jibri.sink.Sink
 
 fun getFfmpegCommandLinux(ffmpegExecutorParams: FfmpegExecutorParams, sink: Sink, display: Int = 0): List<String> {
     val audioParams = if (sink.hasAudio) arrayOf(
-        "-f", "alsa",
+        "-f", "pulse",
         "-thread_queue_size", ffmpegExecutorParams.queueSize.toString(),
-        "-i", "hw:0,1,0",
+        "-i", "default",
         "-acodec", "aac", "-strict", "-2", "-ar", "44100"
     ) else arrayOf("")
 
