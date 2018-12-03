@@ -43,7 +43,7 @@ fun getFfmpegCommandLinux(ffmpegExecutorParams: FfmpegExecutorParams, sink: Sink
         *sink.options, "-pix_fmt", "yuv420p", "-r", ffmpegExecutorParams.framerate.toString(),
         *h264Params,
         "-f", sink.format, sink.path
-    )
+    ).filter{!it.isBlank()}
 }
 
 fun getFfmpegCommandMac(ffmpegExecutorParams: FfmpegExecutorParams, sink: Sink, display: Int = 0): List<String> {
