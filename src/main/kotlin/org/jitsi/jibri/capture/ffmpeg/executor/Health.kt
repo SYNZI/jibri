@@ -115,6 +115,10 @@ fun getFfmpegStatus(process: ProcessWrapper): Pair<FfmpegStatus, String> {
         result.containsKey(WARNING_KEY) -> FfmpegStatus.WARNING
         else -> FfmpegStatus.ERROR
     }
+
+Logger.getLogger("TEMP").info("[TEMP-FFMPEG] Output: $mostRecentLine");
+
+
     return Pair(status, mostRecentLine)
 }
 
