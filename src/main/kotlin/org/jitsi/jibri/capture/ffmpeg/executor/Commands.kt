@@ -28,7 +28,7 @@ fun getFfmpegCommandLinux(ffmpegExecutorParams: FfmpegExecutorParams, sink: Sink
 
     val h264Params = if (sink.options.contains("libx264")) arrayOf(
         "-crf", ffmpegExecutorParams.h264ConstantRateFactor.toString(),
-        "-g", ffmpegExecutorParams.gopSize.toString(), "-tune", "zerolatency",
+        "-g", ffmpegExecutorParams.gopSize.toString(), "-tune", "zerolatency"
     ) else arrayOf("")
 
     return listOf(
