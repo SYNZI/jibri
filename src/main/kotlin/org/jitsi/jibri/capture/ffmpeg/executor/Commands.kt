@@ -26,6 +26,11 @@ fun getFfmpegCommandLinux(ffmpegExecutorParams: FfmpegExecutorParams, sink: Sink
         "-acodec", "aac", "-strict", "-2", "-ar", "44100"
     ) else arrayOf("")
 
+    val h264Params = if (sink.options.contains("libx264")) arrayOf(
+        "-crf", ffmpegExecutorParams.h264ConstantRateFactor.toString(),
+        "-g", ffmpegExecutorParams.gopSize.toString(), "-tune", "zerolatency",
+    ) else arrayOf("")
+
     return listOf(
         "ffmpeg", "-y", "-v", "info",
         "-f", "x11grab",
@@ -36,8 +41,7 @@ fun getFfmpegCommandLinux(ffmpegExecutorParams: FfmpegExecutorParams, sink: Sink
         "-i", ":$display.0+0,0",
         *audioParams,
         *sink.options, "-pix_fmt", "yuv420p", "-r", ffmpegExecutorParams.framerate.toString(),
-        "-crf", ffmpegExecutorParams.h264ConstantRateFactor.toString(),
-        "-g", ffmpegExecutorParams.gopSize.toString(), "-tune", "zerolatency",
+        *h264Params,
         "-f", sink.format, sink.path
     )
 }
