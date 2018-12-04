@@ -116,8 +116,7 @@ fun getFfmpegStatus(process: ProcessWrapper): Pair<FfmpegStatus, String> {
         else -> FfmpegStatus.ERROR
     }
 
-Logger.getLogger("TEMP").info("[TEMP-FFMPEG] Output: $mostRecentLine");
-
+Logger.getLogger("TEMP").info("[TEMP-FFMPEG] Output: $mostRecentLine")
 
     return Pair(status, mostRecentLine)
 }
