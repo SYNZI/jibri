@@ -311,7 +311,8 @@ class JibriSelenium(
                 numTimesNoMedia = 0
             }
             if (numTimesNoMedia >= 2) {
-                return CallStatusCheckResult.UNHEALTHY
+                logger.info("No media $numTimesNoMedia times - Just going to wait.")
+                //return CallStatusCheckResult.UNHEALTHY
             }
             return CallStatusCheckResult.HEALTHY_ONGOING
         }
