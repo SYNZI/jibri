@@ -143,16 +143,18 @@ class SipGatewayJibriService(
             logger.error("Selenium failed to join the call")
             return false
         }
-        if (!pjsuaClient.start()) {
-            logger.error("Pjsua failed to start")
-            return false
-        }
+
         if (!conferenceCapturer.start(conferenceSink, conferenceDisplayId)) {
             logger.error("Conference Capturer failed to start")
             return false
         }
         if (!sipCapturer.start(sipSink, sipDisplayId)) {
             logger.error("Sip Device Capturer failed to start")
+            return false
+        }
+
+        if (!pjsuaClient.start()) {
+            logger.error("Pjsua failed to start")
             return false
         }
 
